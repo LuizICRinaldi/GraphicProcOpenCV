@@ -1,0 +1,17 @@
+# Ambiente virtual
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Configurações locais
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Dataset armazenado no Google Drive
+SIDD_Small_sRGB_Only/
+
+# Arquivos compactados
+*.zip
