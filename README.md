@@ -1,16 +1,12 @@
 # GraphicProcOpenCV — Smartphone Image Denoising
 
-Projeto acadêmico de Processamento de Imagens desenvolvido com Python, OpenCV e NumPy. O objetivo é desenvolver um sistema de restauração em lote para reduzir ruído real de aquisição em fotografias de smartphones, preservando bordas, texturas e detalhes.
+Projeto acadêmico de Processamento de Imagens desenvolvido com Python, OpenCV e NumPy para restauração de fotografias com ruído real de aquisição.
 
-## 1. Objetivo
+O trabalho consiste no desenvolvimento de um sistema de processamento em lote capaz de reduzir o ruído presente em fotografias de smartphones, procurando preservar bordas, texturas e detalhes.
 
-Desenvolver e avaliar diferentes estratégias clássicas de redução de ruído em fotografias capturadas pelo iPhone 7.
+---
 
-O sistema recebe imagens ruidosas (Noisy sRGB), aplica técnicas de restauração e compara os resultados com imagens de referência (Ground Truth).
-
-O projeto também contempla a implementação de um filtro adaptativo baseado em estatísticas locais, conforme exigido no trabalho.
-
-## 2. Identificação do projeto
+## 1. Identificação do projeto
 
 - **Combinação:** 6
 - **Problema:** Restauração de imagens com ruído real.
@@ -19,11 +15,23 @@ O projeto também contempla a implementação de um filtro adaptativo baseado em
 - **Dataset:** SIDD-Small — Smartphone Image Denoising Dataset.
 - **Formato utilizado:** sRGB (PNG).
 
+## 2. Objetivo
+
+Desenvolver e comparar diferentes estratégias clássicas de redução de ruído em fotografias capturadas pelo iPhone 7.
+
+O sistema recebe imagens ruidosas, aplica métodos de restauração e compara os resultados com imagens de referência (Ground Truth).
+
+O projeto também contempla o desenvolvimento de um filtro adaptativo próprio, baseado em estatísticas locais de média e variância, conforme exigido pelo enunciado.
+
+Não são utilizados ruídos artificiais, redes neurais, modelos pré-treinados ou serviços externos de inteligência artificial para realizar a restauração.
+
+---
+
 ## 3. Dataset
 
-Foi utilizada uma seleção do SIDD-Small contendo exclusivamente imagens capturadas pelo iPhone 7 (`IP`).
+Foi utilizada uma seleção do SIDD-Small contendo exclusivamente imagens capturadas pelo iPhone 7, identificadas pelo código `IP`.
 
-O conjunto contém 54 pares de imagens:
+### Caracterização dos dados
 
 | Condição de iluminação | Pares |
 |---|---:|
@@ -33,40 +41,50 @@ O conjunto contém 54 pares de imagens:
 
 Cada par contém:
 
-- `NOISY_SRGB`: imagem original com ruído real de aquisição.
-- `GT_SRGB`: imagem de referência (Ground Truth).
+- `NOISY_SRGB`: fotografia original contendo ruído real de aquisição.
+- `GT_SRGB`: fotografia de referência utilizada para avaliar a restauração.
 
-Não são adicionados ruídos artificialmente às imagens.
+Foram utilizadas somente as imagens no espaço de cor sRGB. Os arquivos Raw-RGB e metadados não fazem parte do processamento.
 
-**Download do dataset:** [Google Drive — SIDD iPhone 7 sRGB]([DATASET Editado](https://drive.google.com/drive/folders/1vi2vPiz0L2r4eys9I4JpGYfF-9pWlnb-?usp=sharing))
+**Download do dataset:** [Google Drive — SIDD iPhone 7 sRGB]([DRIVE](https://drive.google.com/drive/folders/1vi2vPiz0L2r4eys9I4JpGYfF-9pWlnb-?usp=drive_link))
 
 **Página oficial:** https://abdokamel.github.io/sidd/
 
-O dataset não está incluído diretamente neste repositório. Após baixar e extrair o arquivo ZIP, coloque a pasta `SIDD_Small_sRGB_Only` na raiz do projeto.
+O dataset não está armazenado diretamente neste repositório. Para executar o projeto, é necessário baixá-lo e extrair seu conteúdo conforme as instruções deste README.
 
-Estrutura esperada:
+### Estrutura esperada do dataset
 
 ```text
 opencv/
-├── SIDD_Small_sRGB_Only/
-│   └── data/
-│       ├── 0028_001_IP_00100_00160_5500_N/
-│       │   ├── GT_SRGB_010.PNG
-│       │   └── NOISY_SRGB_010.PNG
-│       └── ... (54 pastas)
+└── SIDD_Small_sRGB_Only/
+    └── data/
+        ├── 0028_001_IP_00100_00160_5500_N/
+        │   ├── GT_SRGB_010.PNG
+        │   └── NOISY_SRGB_010.PNG
+        ├── 0193_009_IP_00800_02000_3200_N/
+        │   ├── GT_SRGB_010.PNG
+        │   └── NOISY_SRGB_010.PNG
+        └── ... (54 pastas)
 ```
 
 Os nomes originais das pastas e arquivos devem ser preservados.
 
+---
+
 ## 4. Tecnologias utilizadas
 
-- Python
-- OpenCV
-- NumPy
-- Matplotlib
-- Pandas
-- scikit-image
-- scikit-learn
+| Tecnologia | Aplicação |
+|---|---|
+| Python | Linguagem principal |
+| OpenCV | Leitura, filtragem e processamento de imagens |
+| NumPy | Operações matriciais e estatísticas locais |
+| Matplotlib | Visualização e comparação das imagens |
+| Pandas | Organização de dados e tabelas experimentais |
+| scikit-image | Cálculo das métricas de qualidade |
+| scikit-learn | Separação dos conjuntos de dados |
+| PyWavelets | Implementação de Wavelet Denoising |
+
+---
 
 ## 5. Estrutura do projeto
 
@@ -78,27 +96,48 @@ opencv/
 │   ├── baseline.py
 │   ├── split_dataset.py
 │   ├── baseline_test.py
-│   └── gaussian_filter.py
+│   ├── gaussian_filter.py
+│   ├── denoising_methods.py
+│   ├── compare_filters.py
+│   └── final_evaluation.py
 │
 ├── results/
 │   ├── pairs_ip.csv
 │   ├── data_splits.csv
+│   │
 │   ├── baseline_per_image.csv
 │   ├── baseline_summary.csv
 │   ├── baseline_test_per_image.csv
 │   ├── baseline_test_summary.csv
-│   └── gaussian/
-│       ├── gaussian_per_image.csv
-│       ├── gaussian_summary.csv
+│   │
+│   ├── gaussian/
+│   │   ├── gaussian_per_image.csv
+│   │   ├── gaussian_summary.csv
+│   │   ├── restored/
+│   │   └── comparisons/
+│   │
+│   ├── method_comparison/
+│   │   ├── validation_per_image.csv
+│   │   ├── validation_summary.csv
+│   │   ├── validation_best_configs.json
+│   │   └── visuals/
+│   │
+│   └── final_test/
+│       ├── final_per_image.csv
+│       ├── final_summary.csv
 │       ├── restored/
 │       └── comparisons/
 │
-├── SIDD_Small_sRGB_Only/ (dataset local, não enviado ao GitHub)
-├── .venv/ (ambiente virtual local, não enviado ao GitHub)
+├── SIDD_Small_sRGB_Only/   (dataset local)
+├── .venv/                 (ambiente virtual local)
 ├── requirements.txt
 ├── .gitignore
 └── README.md
 ```
+
+As pastas `.venv/` e `SIDD_Small_sRGB_Only/` não são enviadas ao GitHub. O ambiente virtual é recriado localmente e o dataset é disponibilizado pelo Google Drive.
+
+---
 
 ## 6. Instalação e configuração
 
@@ -106,9 +145,9 @@ opencv/
 
 - Python instalado.
 - Git instalado.
-- Dataset SIDD-Small preparado conforme a estrutura descrita anteriormente.
+- Acesso ao dataset SIDD-Small disponibilizado no Google Drive.
 
-### Clonar o repositório
+### 6.1. Clonar o repositório
 
 ```bash
 git clone https://github.com/LuizICRinaldi/GraphicProcOpenCV.git opencv
@@ -116,7 +155,7 @@ git clone https://github.com/LuizICRinaldi/GraphicProcOpenCV.git opencv
 cd opencv
 ```
 
-### Criar o ambiente virtual
+### 6.2. Criar o ambiente virtual
 
 Windows PowerShell:
 
@@ -142,29 +181,40 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-### Instalar dependências
+### 6.3. Instalar as dependências
+
+Com o ambiente virtual ativado:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 7. Execução do projeto
+### 6.4. Preparar o dataset
 
-Todos os comandos devem ser executados a partir da raiz do projeto (`opencv`), com o ambiente virtual ativado.
+1. Acesse o link do Google Drive.
+2. Baixe o arquivo ZIP contendo os pares do iPhone 7.
+3. Extraia o conteúdo na raiz do projeto.
+4. Verifique se a estrutura corresponde à seção 3 deste README.
 
-### 7.1. Inspeção do dataset
+Após a extração, o projeto deverá encontrar as 54 pastas automaticamente.
 
-```bash
-python src/inspect_dataset.py
-```
+---
 
-Responsabilidades:
+## 7. Metodologia e pipeline
 
-- Localizar as pastas identificadas com `IP`.
-- Encontrar os arquivos Noisy sRGB e Ground Truth.
-- Validar a leitura das imagens.
-- Verificar dimensões e canais.
-- Gerar um catálogo dos pares.
+O desenvolvimento foi dividido em etapas para garantir a organização dos dados, a implementação dos métodos e a avaliação experimental.
+
+### 7.1. Inspeção e preparação do dataset
+
+Arquivo: `src/inspect_dataset.py`
+
+O programa:
+
+- Localiza as pastas identificadas com `IP`.
+- Identifica os arquivos `NOISY_SRGB` e `GT_SRGB`.
+- Carrega as imagens utilizando OpenCV.
+- Verifica dimensões e canais.
+- Gera um catálogo dos pares válidos.
 
 Saída:
 
@@ -172,36 +222,11 @@ Saída:
 results/pairs_ip.csv
 ```
 
-### 7.2. Baseline geral
+### 7.2. Separação dos dados
 
-```bash
-python src/baseline.py
-```
+Arquivo: `src/split_dataset.py`
 
-Calcula as métricas das 54 imagens ruidosas originais, sem aplicação de filtros.
-
-Métricas calculadas:
-
-- PSNR.
-- SSIM.
-- MAE.
-
-Saídas:
-
-```text
-results/baseline_per_image.csv
-results/baseline_summary.csv
-```
-
-### 7.3. Divisão dos dados
-
-```bash
-python src/split_dataset.py
-```
-
-Divide os pares em três conjuntos, agrupando imagens pela identificação da cena para evitar vazamento de dados.
-
-Divisão obtida:
+Os 54 pares foram divididos em três conjuntos:
 
 | Conjunto | Pares | Cenas |
 |---|---:|---:|
@@ -210,7 +235,15 @@ Divisão obtida:
 | Teste | 12 | 2 |
 | **Total** | **54** | **9** |
 
-A divisão é reproduzível por meio das sementes aleatórias registradas no código.
+A separação foi realizada agrupando os pares pelo identificador de cena, mantendo imagens associadas à mesma cena no mesmo conjunto.
+
+Foram utilizadas sementes aleatórias fixas para permitir a reprodução da divisão.
+
+Finalidade de cada conjunto:
+
+- **Treinamento:** estimar parâmetros estatísticos do ruído.
+- **Validação:** comparar métodos e selecionar configurações.
+- **Teste:** realizar a avaliação final, sem utilizar previamente seus resultados para ajustar os parâmetros.
 
 Saída:
 
@@ -218,142 +251,296 @@ Saída:
 results/data_splits.csv
 ```
 
-### 7.4. Baseline do conjunto de teste
+### 7.3. Estimativa da variância do ruído
+
+Arquivo: `src/denoising_methods.py`
+
+A variância do ruído é estimada utilizando os 28 pares do conjunto de treinamento.
+
+Inicialmente, calcula-se a diferença entre a imagem ruidosa e sua referência:
+
+D = I - G
+
+Em seguida, calcula-se a variância dessas diferenças separadamente para os canais BGR:
+
+Var(D) = E[D²] - E[D]²
+
+Na execução utilizada para a avaliação final, foram obtidas as seguintes estimativas:
+
+| Canal | Variância estimada |
+|---|---:|
+| B | 104,5734 |
+| G | 50,6784 |
+| R | 144,7307 |
+
+Essa estimativa é utilizada pelo filtro adaptativo durante a restauração.
+
+### 7.4. Baseline
+
+Arquivos:
+- `src/baseline.py`
+- `src/baseline_test.py`
+
+Antes da aplicação dos filtros, foram calculadas as métricas das imagens ruidosas em comparação com suas referências.
+
+O baseline representa o desempenho inicial, sem restauração.
+
+### 7.5. Métodos de redução de ruído
+
+Arquivo: `src/denoising_methods.py`
+
+Foram implementados e comparados cinco métodos clássicos:
+
+**Filtro Gaussiano**
+
+Realiza suavização espacial utilizando uma média ponderada dos pixels vizinhos.
+
+Implementação auxiliar: `cv2.GaussianBlur()`.
+
+**Filtro Mediano**
+
+Substitui o valor de cada pixel pela mediana dos valores de sua vizinhança.
+
+Implementação auxiliar: `cv2.medianBlur()`.
+
+**Filtro Bilateral**
+
+Considera a distância espacial e a semelhança de intensidade entre os pixels durante a suavização, buscando preservar descontinuidades e bordas.
+
+Implementação auxiliar: `cv2.bilateralFilter()`.
+
+**Filtro Adaptativo próprio**
+
+Componente algorítmico desenvolvido pelo grupo.
+
+Utiliza média e variância locais para decidir quanto suavizar cada pixel.
+
+A implementação utiliza operações matriciais do NumPy e `cv2.boxFilter()` como operação auxiliar para calcular estatísticas da vizinhança.
+
+O ganho adaptativo é calculado por:
+
+g(p) = max(0, σ²L(p) - σ²n) / (σ²L(p) + ε)
+
+O pixel restaurado é obtido por:
+
+J(p) = μ(p) + g(p) × [I(p) - μ(p)]
+
+Dessa maneira, a intensidade da suavização depende das características locais da imagem.
+
+Foram investigadas janelas de 3×3, 5×5 e 7×7.
+
+**Wavelet Denoising**
+
+Alternativa adicional pesquisada pelo grupo.
+
+Utiliza decomposição wavelet, thresholding dos coeficientes de detalhe e reconstrução da imagem.
+
+Implementação utilizando a biblioteca PyWavelets.
+
+---
+
+## 8. Investigação experimental
+
+Arquivo: `src/compare_filters.py`
+
+A investigação experimental teve como objetivo comparar o desempenho dos cinco métodos de restauração e identificar quais configurações apresentavam melhores resultados.
+
+Foram utilizadas as 14 imagens do conjunto de validação.
+
+Foram investigadas 13 configurações:
+
+| Método | Configurações |
+|---|---|
+| Gaussiano | 7×7, sigma 1.5 |
+| Mediano | Kernels 3, 5 e 7 |
+| Bilateral | Três combinações de parâmetros |
+| Adaptativo | Janelas 3, 5 e 7 |
+| Wavelet | Multipliers 0.6, 0.8 e 1.0 |
+
+Cada configuração foi aplicada às 14 imagens, totalizando 182 avaliações de restauração.
+
+### Métricas utilizadas
+
+| Métrica | Objetivo | Melhor resultado |
+|---|---|---|
+| PSNR | Avaliar erro em relação à referência | Maior |
+| SSIM | Avaliar similaridade estrutural | Maior |
+| MAE | Avaliar diferença absoluta dos pixels | Menor |
+| Edge MAE | Comparar mapas de magnitude dos gradientes | Menor |
+| Tempo | Avaliar custo computacional | Menor |
+
+O Edge MAE foi calculado comparando os gradientes das imagens restauradas e das referências, utilizando o operador Sobel.
+
+Também foram geradas comparações visuais entre as imagens originais, restauradas e suas respectivas referências.
+
+### Configurações selecionadas na validação
+
+A configuração selecionada para cada método foi:
+
+| Método | Configuração |
+|---|---|
+| Gaussian | Kernel 7×7, sigma 1.5 |
+| Median | Kernel 7 |
+| Bilateral | d=9, sigmaColor=75, sigmaSpace=75 |
+| Adaptive | Janela 7×7 |
+| Wavelet | db2, nível 2, multiplier 1.0 |
+
+### Resultados da validação
+
+| Método | PSNR | SSIM | MAE | Edge MAE |
+|---|---:|---:|---:|---:|
+| Gaussian | 35,3065 | 0,8557 | 3,2701 | 5,2681 |
+| Median | 36,6139 | 0,8942 | 2,7537 | 4,7378 |
+| Bilateral | 36,8304 | 0,9060 | 2,7018 | 4,4536 |
+| Adaptive | 34,8864 | 0,8548 | 3,2488 | 6,7274 |
+| Wavelet | 33,4662 | 0,7924 | 3,9713 | 7,1251 |
+
+O filtro Bilateral apresentou os melhores resultados gerais na validação.
+
+As configurações selecionadas foram registradas em:
+
+```text
+results/method_comparison/validation_best_configs.json
+```
+
+Essas configurações foram posteriormente utilizadas na avaliação final.
+
+---
+
+## 9. Avaliação final
+
+Arquivo: `src/final_evaluation.py`
+
+Após a seleção das configurações utilizando o conjunto de validação, os cinco métodos foram avaliados no conjunto de teste, composto por 12 pares.
+
+O conjunto de teste foi utilizado exclusivamente para a avaliação final.
+
+Além das métricas quantitativas, foram salvas as imagens restauradas e as comparações visuais.
+
+### Resultados gerais do conjunto de teste
+
+| Método | PSNR | SSIM | MAE | Edge MAE | Tempo médio (ms) |
+|---|---:|---:|---:|---:|---:|
+| Original | 28,7432 | 0,5944 | 7,2119 | 23,1807 | — |
+| Gaussian | 34,0290 | 0,8490 | 3,8112 | 10,4230 | 6,09 |
+| Median | 33,2856 | 0,7975 | 4,2496 | 14,2822 | 796,27 |
+| Bilateral | 34,6385 | 0,8635 | 3,5817 | 11,9437 | 124,43 |
+| Adaptive | 33,6483 | 0,8376 | 3,9011 | 9,9746 | 621,62 |
+| Wavelet | 32,3226 | 0,7861 | 4,6317 | 11,5507 | 1634,33 |
+
+Os tempos representam as médias observadas nas execuções realizadas no ambiente de desenvolvimento e podem variar conforme o hardware e as condições de execução.
+
+### Resultados por condição de iluminação
+
+**PSNR e SSIM**
+
+| Método | PSNR L | PSNR N | SSIM L | SSIM N |
+|---|---:|---:|---:|---:|
+| Original | 28,6744 | 28,7924 | 0,5633 | 0,6165 |
+| Gaussian | 34,2035 | 33,9043 | 0,8302 | 0,8624 |
+| Median | 33,4460 | 33,1711 | 0,7696 | 0,8174 |
+| Bilateral | 34,8377 | 34,4962 | 0,8453 | 0,8765 |
+| Adaptive | 34,1567 | 33,2852 | 0,8338 | 0,8403 |
+| Wavelet | 32,5567 | 32,1554 | 0,7675 | 0,7994 |
+
+### Discussão dos resultados
+
+O filtro Bilateral apresentou o melhor desempenho quantitativo geral, alcançando os maiores valores de PSNR e SSIM e o menor MAE.
+
+O filtro Gaussiano destacou-se pela velocidade de execução, apresentando o menor tempo médio entre os métodos.
+
+O filtro Adaptativo desenvolvido pelo grupo apresentou o menor Edge MAE, indicando maior correspondência entre os mapas de gradientes das imagens restauradas e das referências.
+
+Embora não tenha apresentado o melhor desempenho geral em PSNR e SSIM, o filtro adaptativo demonstrou capacidade de redução de ruído e um resultado interessante em relação à preservação de estruturas.
+
+O filtro Mediano apresentou resultados intermediários, enquanto o Wavelet obteve o menor desempenho quantitativo entre os métodos avaliados nas configurações selecionadas.
+
+Os resultados indicam que o método mais adequado depende do critério considerado: qualidade geral, velocidade de execução ou correspondência de bordas.
+
+---
+
+## 10. Limitações do experimento
+
+Algumas limitações devem ser consideradas na interpretação dos resultados:
+
+- O conjunto de teste contém apenas 12 pares distribuídos em duas cenas distintas.
+- A quantidade reduzida de cenas limita a generalização dos resultados.
+- A variância do ruído é estimada globalmente por canal, embora o ruído real possa variar conforme a intensidade da iluminação e as condições de aquisição.
+- Foram investigadas quantidades limitadas de configurações para cada método.
+- Os tempos de processamento foram obtidos em execuções pontuais e dependem do hardware utilizado.
+- O Edge MAE mede a correspondência entre magnitudes de gradientes e não representa isoladamente uma garantia de preservação visual de todos os detalhes.
+
+---
+
+## 11. Como executar o projeto
+
+Todos os comandos devem ser executados a partir da raiz do projeto (`opencv`), com o ambiente virtual ativado e o dataset preparado.
+
+### Inspecionar o dataset
+
+```bash
+python src/inspect_dataset.py
+```
+
+### Calcular o baseline geral
+
+```bash
+python src/baseline.py
+```
+
+### Separar os dados
+
+```bash
+python src/split_dataset.py
+```
+
+### Calcular o baseline do teste
 
 ```bash
 python src/baseline_test.py
 ```
 
-Calcula as métricas das 12 imagens originais do conjunto de teste.
-
-Saídas:
-
-```text
-results/baseline_test_per_image.csv
-results/baseline_test_summary.csv
-```
-
-### 7.5. Experimentos com filtro Gaussiano
+### Executar os experimentos de validação
 
 ```bash
-python src/gaussian_filter.py
+python src/compare_filters.py
 ```
 
-Testa diferentes combinações de tamanho de kernel e sigma utilizando as 14 imagens do conjunto de validação.
+### Executar a avaliação final
 
-Configurações investigadas:
-
-| Kernel | Sigma |
-|---|---|
-| 3 × 3 | 0.5, 1.0, 1.5 |
-| 5 × 5 | 0.5, 1.0, 1.5 |
-| 7 × 7 | 0.5, 1.0, 1.5 |
-
-São calculadas métricas individuais, resultados agregados e tempo médio de processamento.
-
-A configuração de melhor resultado inicial na validação foi:
-
-- Kernel: 7 × 7.
-- Sigma: 1.5.
-- PSNR médio: 35.3065 dB.
-- SSIM médio: 0.8557.
-- MAE médio: 3.2701.
-- Tempo médio: 7.5415 ms.
-
-A configuração selecionada também é utilizada para gerar imagens restauradas e comparações visuais entre as imagens originais, restauradas e suas referências.
-
-Saídas:
-
-```text
-results/gaussian/
-├── gaussian_per_image.csv
-├── gaussian_summary.csv
-├── restored/
-└── comparisons/
+```bash
+python src/final_evaluation.py
 ```
 
-Os resultados de validação não representam a avaliação final no conjunto de teste.
+A avaliação final utiliza as configurações previamente selecionadas na validação, registradas em `validation_best_configs.json`.
 
-## 8. Resultados iniciais do baseline
+---
 
-### Dataset completo
+## 12. Conclusão
 
-| Métrica | Média |
-|---|---:|
-| PSNR | 28.4965 dB |
-| SSIM | 0.5228 |
-| MAE | 7.3556 |
+O projeto desenvolveu uma pipeline completa de restauração em lote para fotografias com ruído real capturadas pelo iPhone 7.
 
-### Conjunto de teste
+Foram implementados e comparados cinco métodos clássicos de redução de ruído, incluindo um filtro adaptativo próprio baseado em estatísticas locais.
 
-| Métrica | Média |
-|---|---:|
-| PSNR | 28.7432 dB |
-| SSIM | 0.5944 |
-| MAE | 7.2119 |
+Os resultados demonstraram que todos os métodos melhoraram as imagens em relação ao baseline original.
 
-Esses valores representam as imagens originais ruidosas, antes da aplicação de qualquer filtro.
+O Bilateral apresentou o melhor desempenho geral nas métricas PSNR, SSIM e MAE, enquanto o Gaussiano apresentou o menor tempo médio de processamento.
 
-## 9. Métricas de avaliação
+O filtro adaptativo desenvolvido pelo grupo apresentou o menor erro de gradientes entre os métodos, demonstrando uma característica relevante para a investigação da preservação de bordas e estruturas.
 
-O projeto utiliza as seguintes métricas:
+A investigação também demonstrou que a escolha do método depende do equilíbrio desejado entre redução de ruído, preservação de detalhes e custo computacional.
 
-| Métrica | Objetivo | Melhor resultado |
-|---|---|---|
-| PSNR | Medir o erro em relação à referência | Maior |
-| SSIM | Avaliar similaridade estrutural | Maior |
-| MAE | Medir diferença absoluta entre pixels | Menor |
-| Tempo | Avaliar custo computacional | Menor |
+---
 
-Também será investigada a preservação de bordas e detalhes por meio da comparação de gradientes.
+## 14. Autoria
 
-As métricas serão calculadas individualmente por imagem e agregadas para comparação entre os métodos.
+**Projeto:** Processamento de Imagens.
 
-## 10. Métodos de restauração previstos
+**Repositório:** https://github.com/LuizICRinaldi/GraphicProcOpenCV
 
-O projeto contempla a implementação e comparação das seguintes estratégias:
+**Integrantes:**
+Abraao, Luiz Inácio e Nicolas
 
-- Filtro Gaussiano.
-- Filtro Mediano.
-- Filtro Bilateral.
-- Filtro adaptativo desenvolvido pelo grupo, baseado em estatísticas locais.
-- Wavelet Denoising.
-
-O filtro adaptativo é o componente algorítmico obrigatório e deverá ser desenvolvido e explicado pelo grupo.
-
-## 11. Status do desenvolvimento
-
-- [x] Preparação e inspeção do dataset.
-- [x] Seleção dos 54 pares do iPhone 7.
-- [x] Validação das imagens e geração do catálogo.
-- [x] Cálculo do baseline geral.
-- [x] Separação de treinamento, validação e teste.
-- [x] Cálculo do baseline do conjunto de teste.
-- [x] Implementação e experimentação inicial do filtro Gaussiano.
-- [x] Comparação inicial de nove configurações Gaussianas.
-- [x] Geração de imagens restauradas e comparações visuais do Gaussiano.
-- [ ] Filtro Mediano.
-- [ ] Filtro Bilateral.
-- [ ] Filtro adaptativo próprio.
-- [ ] Wavelet Denoising.
-- [ ] Investigação experimental comparativa completa.
-- [ ] Avaliação final no conjunto de teste.
-- [ ] Relatório técnico.
-
-## 12. Referências
-
-ABDELHAMED, A.; LIN, S.; BROWN, M. S. A High-Quality Denoising Dataset for Smartphone Cameras. In: IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2018.
-
-DOI: https://doi.org/10.1109/CVPR.2018.00182
-
-Dataset SIDD: https://abdokamel.github.io/sidd/
-
-## 13. Autoria
-
-**Projeto acadêmico:** Processamento de Imagens.
-
-**Integrantes:** preencher com os nomes dos integrantes.
-
-**Instituição:** preencher com o nome da instituição.
+**Instituição:** Unisinos
 
 **Ano:** 2026.
