@@ -15,39 +15,52 @@ from skimage.metrics import (
 # ==========================================
 
 def estimate_noise_variance(train_df, project_root):
-    """
-    Estima a variância do ruído por canal BGR,
-    utilizando exclusivamente os pares de treinamento.
-    """
 
     noise_sum = np.zeros(3, dtype=np.float64)
+    noise_square_sum = np.zeros(3, dtype=np.float64)
     total_pixels = 0
 
     for _, row in train_df.iterrows():
 
-        noisy_path = project_root / row["noisy_path"]
-        gt_path = project_root / row["gt_path"]
+        noisy = cv2.imread(
+            str(project_root / row["noisy_path"]),
+            cv2.IMREAD_COLOR
+        )
 
-        noisy = cv2.imread(str(noisy_path), cv2.IMREAD_COLOR)
-        gt = cv2.imread(str(gt_path), cv2.IMREAD_COLOR)
+        gt = cv2.imread(
+            str(project_root / row["gt_path"]),
+            cv2.IMREAD_COLOR
+        )
 
         if noisy is None or gt is None:
-            raise ValueError(f"Erro ao ler: {row['folder']}")
+            raise ValueError(f"Erro: {row['folder']}")
 
-        if noisy.shape != gt.shape:
-            raise ValueError(f"Dimensões diferentes: {row['folder']}")
+        difference = (
+            noisy.astype(np.float64)
+            - gt.astype(np.float64)
+        )
 
-        difference = noisy.astype(np.float32) - gt.astype(np.float32)
+        noise_sum += np.sum(
+            difference, axis=(0, 1)
+        )
 
-        noise_sum += np.sum(difference ** 2, axis=(0, 1))
+        noise_square_sum += np.sum(
+            difference ** 2, axis=(0, 1)
+        )
+
         total_pixels += noisy.shape[0] * noisy.shape[1]
 
     if total_pixels == 0:
-        raise ValueError("Não existem pixels para estimar o ruído.")
+        raise ValueError("Nenhum pixel encontrado.")
 
-    variance = noise_sum / total_pixels
+    mean = noise_sum / total_pixels
 
-    return variance
+    variance = (
+        noise_square_sum / total_pixels
+        - mean ** 2
+    )
+
+    return np.maximum(variance, 0)
 
 
 # ==========================================

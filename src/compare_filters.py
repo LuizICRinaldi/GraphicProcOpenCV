@@ -126,6 +126,31 @@ configs = [
 
 results = []
 
+# Baseline das imagens de validação
+for _, row in validation_df.iterrows():
+
+    noisy = cv2.imread(
+        str(ROOT / row["noisy_path"]),
+        cv2.IMREAD_COLOR
+    )
+
+    gt = cv2.imread(
+        str(ROOT / row["gt_path"]),
+        cv2.IMREAD_COLOR
+    )
+
+    metrics = calculate_metrics(noisy, gt)
+
+    results.append({
+        "folder": row["folder"],
+        "brightness": row["brightness"],
+        "method": "Original",
+        "config_id": "baseline",
+        "params": "baseline",
+        **metrics,
+        "time_ms": 0
+    })
+
 for index, config in enumerate(configs, start=1):
 
     method = config["method"]
@@ -240,7 +265,13 @@ print(
 
 best_configs = {}
 
-for method in results_df["method"].unique():
+for method in [
+    "Gaussian",
+    "Median",
+    "Bilateral",
+    "Adaptive",
+    "Wavelet"
+]:
 
     method_results = summary[
         summary["method"] == method
