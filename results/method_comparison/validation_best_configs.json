@@ -1,0 +1,54 @@
+{
+    "noise_variance_bgr": [
+        104.71661796332289,
+        50.690583795246496,
+        145.59047574056078
+    ],
+    "selected_configs": {
+        "Gaussian": {
+            "params": {
+                "kernel": 7,
+                "sigma": 1.5
+            },
+            "SSIM_mean": 0.8557140877852163,
+            "PSNR_mean": 35.30645661713568,
+            "MAE_mean": 3.2701144218444824
+        },
+        "Median": {
+            "params": {
+                "ksize": 7
+            },
+            "SSIM_mean": 0.8942221426386817,
+            "PSNR_mean": 36.61391261351425,
+            "MAE_mean": 2.7537364959716797
+        },
+        "Bilateral": {
+            "params": {
+                "d": 9,
+                "sigmaColor": 75,
+                "sigmaSpace": 75
+            },
+            "SSIM_mean": 0.906024783399413,
+            "PSNR_mean": 36.83039642816052,
+            "MAE_mean": 2.7018449306488037
+        },
+        "Adaptive": {
+            "params": {
+                "window": 7
+            },
+            "SSIM_mean": 0.8551127071220831,
+            "PSNR_mean": 34.89647670738503,
+            "MAE_mean": 3.2458131313323975
+        },
+        "Wavelet": {
+            "params": {
+                "level": 2,
+                "multiplier": 1.0,
+                "wavelet": "db2"
+            },
+            "SSIM_mean": 0.792361913670321,
+            "PSNR_mean": 33.466232667320945,
+            "MAE_mean": 3.9713287353515625
+        }
+    }
+}
