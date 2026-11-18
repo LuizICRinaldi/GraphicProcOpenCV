@@ -46,7 +46,7 @@ Cada par contém:
 
 Foram utilizadas somente as imagens no espaço de cor sRGB. Os arquivos Raw-RGB e metadados não fazem parte do processamento.
 
-**Download do dataset:** [Google Drive — SIDD iPhone 7 sRGB]([DRIVE](https://drive.google.com/drive/folders/1vi2vPiz0L2r4eys9I4JpGYfF-9pWlnb-?usp=drive_link))
+**Download do dataset:** [Google Drive — SIDD iPhone 7 sRGB]((https://drive.google.com/drive/folders/1vi2vPiz0L2r4eys9I4JpGYfF-9pWlnb-?usp=drive_link))
 
 **Página oficial:** https://abdokamel.github.io/sidd/
 
