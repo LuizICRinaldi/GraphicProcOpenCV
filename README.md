@@ -532,7 +532,7 @@ A investigação também demonstrou que a escolha do método depende do equilíb
 
 ---
 
-## 14. Autoria
+## 13. Autoria
 
 **Projeto:** Processamento de Imagens.
 
