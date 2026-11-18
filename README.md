@@ -38,7 +38,7 @@ Cada par contém:
 
 Não são adicionados ruídos artificialmente às imagens.
 
-**Download do dataset:** [Google Drive — SIDD iPhone 7 sRGB](INSERIR_LINK_DO_GOOGLE_DRIVE)
+**Download do dataset:** [Google Drive — SIDD iPhone 7 sRGB]([DATASET Editado](https://drive.google.com/drive/folders/1vi2vPiz0L2r4eys9I4JpGYfF-9pWlnb-?usp=sharing))
 
 **Página oficial:** https://abdokamel.github.io/sidd/
 
